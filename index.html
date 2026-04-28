@@ -419,6 +419,26 @@
     color: var(--muted); border: 1px dashed rgba(255,255,255,.15);
     padding: 6px 14px; border-radius: 2px;
   }
+  .branch-services {
+    font-size: .72rem; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 20px; font-weight: 600;
+    opacity: .8;
+  }
+  /* admin pin editor (only visible in admin mode) */
+  .branch-pin-admin { display: none !important; }
+  body.admin-mode .branch-pin-admin { display: block !important; margin-top: 10px; }
+  .branch-pin-input {
+    width: 100%; padding: 9px 12px;
+    background: rgba(255,255,255,.05);
+    border: 1px dashed rgba(201,168,76,.5);
+    color: var(--cream); font-family: 'DM Sans', sans-serif; font-size: .78rem;
+    border-radius: 2px; outline: none; transition: border-color .2s;
+  }
+  .branch-pin-input:focus { border-color: var(--gold); border-style: solid; }
+  .branch-pin-hint {
+    display: block; font-size: .62rem; color: var(--muted);
+    letter-spacing: .06em; margin-top: 5px;
+  }
 
   /* ── FOOTER ── */
   footer {
@@ -979,134 +999,63 @@
   <div class="section-title">Our Menu</div>
 
   <div class="menu-tabs">
-    <button class="tab active" onclick="switchTab(event,'signature')">Signature Frappe</button>
-    <button class="tab" onclick="switchTab(event,'cookies')">Cookies</button>
-    <button class="tab" onclick="switchTab(event,'nutella')">Nutella</button>
+    <button class="tab active" onclick="switchTab(event,'noncoffee')">Non Coffee</button>
     <button class="tab" onclick="switchTab(event,'coffee')">Coffee</button>
+    <button class="tab" onclick="switchTab(event,'limited')">Limited</button>
+    <button class="tab" onclick="switchTab(event,'seasonal')">Seasonal</button>
+    <button class="tab" onclick="switchTab(event,'slurpee')">Slurpee</button>
   </div>
 
-  <!-- Signature Frappe -->
-  <div class="menu-panel active" id="tab-signature">
+  <!-- Non Coffee -->
+  <div class="menu-panel active" id="tab-noncoffee">
     <div class="menu-grid">
-      <div class="menu-item" style="opacity: 1; transform: translateY(0px); transition: opacity 0.5s, transform 0.5s;">
-        <div class="item-name" data-editable="sig-1-name">Yummie</div>
-        <div class="item-desc" data-editable="sig-1-desc">Signature blended frappe</div>
-        <div class="item-price" data-editable="sig-1-price">₱119</div>
-        <button class="watch-btn" id="watch-sig-1" onclick="openVideoModal(event, 'sig-1', this)">
-          <span class="play-icon">▶</span>
-          <span class="watch-label">Watch how it's made</span>
-        </button>
+      <div class="menu-item" style="opacity:1;transform:translateY(0);transition:opacity .5s,transform .5s;">
+        <div class="item-name">Fudgie</div>
+        <div class="item-desc">Dark Choco Almond Fudge</div>
+        <div class="item-price">₱109 <span style="font-size:.75rem;color:var(--muted);">/ 16oz</span></div>
+        <button class="watch-btn" id="watch-nc-1" onclick="openVideoModal(event,'nc-1',this)"><span class="play-icon">▶</span><span class="watch-label">Watch how it's made</span></button>
       </div>
-      <div class="menu-item" style="opacity: 1; transform: translateY(0px); transition: opacity 0.5s, transform 0.5s;">
-        <div class="item-name" data-editable="sig-2-name">Valmond</div>
-        <div class="item-desc" data-editable="sig-2-desc">Vanilla almond frappe</div>
-        <div class="item-price" data-editable="sig-2-price">₱119</div>
-        <button class="watch-btn" id="watch-sig-2" onclick="openVideoModal(event, 'sig-2', this)">
-          <span class="play-icon">▶</span>
-          <span class="watch-label">Watch how it's made</span>
-        </button>
+      <div class="menu-item" style="opacity:1;transform:translateY(0);transition:opacity .5s,transform .5s;">
+        <div class="item-name">Tella</div>
+        <div class="item-desc">Nutella Chips Cheesecake</div>
+        <div class="item-price">₱109 <span style="font-size:.75rem;color:var(--muted);">/ 16oz</span></div>
+        <button class="watch-btn" id="watch-nc-2" onclick="openVideoModal(event,'nc-2',this)"><span class="play-icon">▶</span><span class="watch-label">Watch how it's made</span></button>
       </div>
-      <div class="menu-item" style="opacity: 1; transform: translateY(0px); transition: opacity 0.5s, transform 0.5s;">
-        <div class="item-name" data-editable="sig-3-name">Tarow</div>
-        <div class="item-desc" data-editable="sig-3-desc">Taro quezo almonds</div>
-        <div class="item-price" data-editable="sig-3-price">₱119</div>
-        <button class="watch-btn" id="watch-sig-3" onclick="openVideoModal(event, 'sig-3', this)">
-          <span class="play-icon">▶</span>
-          <span class="watch-label">Watch how it's made</span>
-        </button>
+      <div class="menu-item" style="opacity:1;transform:translateY(0);transition:opacity .5s,transform .5s;">
+        <div class="item-name">Valmond</div>
+        <div class="item-desc">Vanilla Almonds</div>
+        <div class="item-price">₱109 <span style="font-size:.75rem;color:var(--muted);">/ 16oz</span></div>
+        <button class="watch-btn" id="watch-nc-3" onclick="openVideoModal(event,'nc-3',this)"><span class="play-icon">▶</span><span class="watch-label">Watch how it's made</span></button>
       </div>
-      <div class="menu-item" style="opacity: 1; transform: translateY(0px); transition: opacity 0.5s, transform 0.5s;">
-        <div class="item-name" data-editable="sig-4-name">Velto</div>
-        <div class="item-desc" data-editable="sig-4-desc">Refreshing Ube Quezo</div>
-        <div class="item-price" data-editable="sig-4-price">₱119</div>
-        <button class="watch-btn" id="watch-sig-4" onclick="openVideoModal(event, 'sig-4', this)">
-          <span class="play-icon">▶</span>
-          <span class="watch-label">Watch how it's made</span>
-        </button>
+      <div class="menu-item" style="opacity:1;transform:translateY(0);transition:opacity .5s,transform .5s;">
+        <div class="item-name">Velto</div>
+        <div class="item-desc">Red Velvet Queso Oreo</div>
+        <div class="item-price">₱109 <span style="font-size:.75rem;color:var(--muted);">/ 16oz</span></div>
+        <button class="watch-btn" id="watch-nc-4" onclick="openVideoModal(event,'nc-4',this)"><span class="play-icon">▶</span><span class="watch-label">Watch how it's made</span></button>
       </div>
-    </div>
-  </div>
-
-  <!-- Cookies -->
-  <div class="menu-panel" id="tab-cookies">
-    <div class="menu-grid">
-      <div class="menu-item" style="opacity: 0; transform: translateY(20px); transition: opacity 0.5s, transform 0.5s;">
-        <div class="item-name" data-editable="ck-1-name">Biscoff</div>
-        <div class="item-desc" data-editable="ck-1-desc">Lotus Biscoff blend</div>
-        <div class="item-price" data-editable="ck-1-price">₱169</div>
-        <button class="watch-btn" id="watch-ck-1" onclick="openVideoModal(event, 'ck-1', this)">
-          <span class="play-icon">▶</span>
-          <span class="watch-label">Watch how it's made</span>
-        </button>
+      <div class="menu-item" style="opacity:1;transform:translateY(0);transition:opacity .5s,transform .5s;">
+        <div class="item-name">Tarow</div>
+        <div class="item-desc">Taro Queso Almonds</div>
+        <div class="item-price">₱109 <span style="font-size:.75rem;color:var(--muted);">/ 16oz</span></div>
+        <button class="watch-btn" id="watch-nc-5" onclick="openVideoModal(event,'nc-5',this)"><span class="play-icon">▶</span><span class="watch-label">Watch how it's made</span></button>
       </div>
-      <div class="menu-item" style="opacity: 0; transform: translateY(20px); transition: opacity 0.5s, transform 0.5s;">
-        <div class="item-name" data-editable="ck-2-name">Ochee</div>
-        <div class="item-desc" data-editable="ck-2-desc">Oreo Cheesecake</div>
-        <div class="item-price" data-editable="ck-2-price">₱119</div>
-        <button class="watch-btn" id="watch-ck-2" onclick="openVideoModal(event, 'ck-2', this)">
-          <span class="play-icon">▶</span>
-          <span class="watch-label">Watch how it's made</span>
-        </button>
+      <div class="menu-item" style="opacity:1;transform:translateY(0);transition:opacity .5s,transform .5s;">
+        <div class="item-name">Ochee</div>
+        <div class="item-desc">Oreo Cheesecake</div>
+        <div class="item-price">₱99 <span style="font-size:.75rem;color:var(--muted);">/ 16oz</span></div>
+        <button class="watch-btn" id="watch-nc-6" onclick="openVideoModal(event,'nc-6',this)"><span class="play-icon">▶</span><span class="watch-label">Watch how it's made</span></button>
       </div>
-      <div class="menu-item" style="opacity: 0; transform: translateY(20px); transition: opacity 0.5s, transform 0.5s;">
-        <div class="item-name" data-editable="ck-3-name">Darko</div>
-        <div class="item-desc" data-editable="ck-3-desc">Dark Choco Drink</div>
-        <div class="item-price" data-editable="ck-3-price">₱119</div>
-        <button class="watch-btn" id="watch-ck-3" onclick="openVideoModal(event, 'ck-3', this)">
-          <span class="play-icon">▶</span>
-          <span class="watch-label">Watch how it's made</span>
-        </button>
+      <div class="menu-item" style="opacity:1;transform:translateY(0);transition:opacity .5s,transform .5s;">
+        <div class="item-name">Darko</div>
+        <div class="item-desc">Dark Choco Oreo</div>
+        <div class="item-price">₱99 <span style="font-size:.75rem;color:var(--muted);">/ 16oz</span></div>
+        <button class="watch-btn" id="watch-nc-7" onclick="openVideoModal(event,'nc-7',this)"><span class="play-icon">▶</span><span class="watch-label">Watch how it's made</span></button>
       </div>
-      <div class="menu-item" style="opacity: 0; transform: translateY(20px); transition: opacity 0.5s, transform 0.5s;">
-        <div class="item-name" data-editable="ck-4-name">Cookie</div>
-        <div class="item-desc" data-editable="ck-4-desc">Cookies &amp; Crème</div>
-        <div class="item-price" data-editable="ck-4-price">₱119</div>
-        <button class="watch-btn" id="watch-ck-4" onclick="openVideoModal(event, 'ck-4', this)">
-          <span class="play-icon">▶</span>
-          <span class="watch-label">Watch how it's made</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Nutella -->
-  <div class="menu-panel" id="tab-nutella">
-    <div class="menu-grid">
-      <div class="menu-item" style="opacity: 0; transform: translateY(20px); transition: opacity 0.5s, transform 0.5s;">
-        <div class="item-name" data-editable="nt-1-name">Cashew</div>
-        <div class="item-desc" data-editable="nt-1-desc">Caramel Cashew blend</div>
-        <div class="item-price" data-editable="nt-1-price">₱159</div>
-        <button class="watch-btn" id="watch-nt-1" onclick="openVideoModal(event, 'nt-1', this)">
-          <span class="play-icon">▶</span>
-          <span class="watch-label">Watch how it's made</span>
-        </button>
-      </div>
-      <div class="menu-item" style="opacity: 0; transform: translateY(20px); transition: opacity 0.5s, transform 0.5s;">
-        <div class="item-name" data-editable="nt-2-name">Tella</div>
-        <div class="item-desc" data-editable="nt-2-desc">Dark Choco Nutella Cashew</div>
-        <div class="item-price" data-editable="nt-2-price">₱119</div>
-        <button class="watch-btn" id="watch-nt-2" onclick="openVideoModal(event, 'nt-2', this)">
-          <span class="play-icon">▶</span>
-          <span class="watch-label">Watch how it's made</span>
-        </button>
-      </div>
-      <div class="menu-item" style="opacity: 0; transform: translateY(20px); transition: opacity 0.5s, transform 0.5s;">
-        <div class="item-name" data-editable="nt-3-name">Vella</div>
-        <div class="item-desc" data-editable="nt-3-desc">Nutella Fudge</div>
-        <div class="item-price" data-editable="nt-3-price">₱119</div>
-        <button class="watch-btn" id="watch-nt-3" onclick="openVideoModal(event, 'nt-3', this)">
-          <span class="play-icon">▶</span>
-          <span class="watch-label">Watch how it's made</span>
-        </button>
-      </div>
-      <div class="menu-item" style="opacity: 0; transform: translateY(20px); transition: opacity 0.5s, transform 0.5s;">
-        <div class="item-name" data-editable="nt-4-name">Muckie</div>
-        <div class="item-desc" data-editable="nt-4-desc">Milk Nutella Fudge</div>
-        <div class="item-price" data-editable="nt-4-price">₱119</div>
-        <button class="watch-btn" id="watch-nt-4" onclick="openVideoModal(event, 'nt-4', this)">
-          <span class="play-icon">▶</span>
-          <span class="watch-label">Watch how it's made</span>
-        </button>
+      <div class="menu-item" style="opacity:1;transform:translateY(0);transition:opacity .5s,transform .5s;">
+        <div class="item-name">Cookies</div>
+        <div class="item-desc">Cookies &amp; Cream</div>
+        <div class="item-price">₱99 <span style="font-size:.75rem;color:var(--muted);">/ 16oz</span></div>
+        <button class="watch-btn" id="watch-nc-8" onclick="openVideoModal(event,'nc-8',this)"><span class="play-icon">▶</span><span class="watch-label">Watch how it's made</span></button>
       </div>
     </div>
   </div>
@@ -1114,37 +1063,139 @@
   <!-- Coffee -->
   <div class="menu-panel" id="tab-coffee">
     <div class="menu-grid">
-      <div class="menu-item" style="opacity: 0; transform: translateY(20px); transition: opacity 0.5s, transform 0.5s;">
-        <div class="item-name" data-editable="cf-1-name">Carmel Mac</div>
-        <div class="item-desc" data-editable="cf-1-desc">Caramel Macchiato</div>
-        <div class="item-price" data-editable="cf-1-price">₱129</div>
-        <button class="watch-btn" id="watch-cf-1" onclick="openVideoModal(event, 'cf-1', this)">
-          <span class="play-icon">▶</span>
-          <span class="watch-label">Watch how it's made</span>
-        </button>
+      <div class="menu-item" style="opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s;">
+        <div class="item-name">Carmel</div>
+        <div class="item-desc">Caramel Macchiato</div>
+        <div class="item-price">₱109 <span style="font-size:.75rem;color:var(--muted);">/ 16oz</span></div>
+        <button class="watch-btn" id="watch-cf-1" onclick="openVideoModal(event,'cf-1',this)"><span class="play-icon">▶</span><span class="watch-label">Watch how it's made</span></button>
       </div>
-      <div class="menu-item" style="opacity: 0; transform: translateY(20px); transition: opacity 0.5s, transform 0.5s;">
-        <div class="item-name" data-editable="cf-2-name">Mocha</div>
-        <div class="item-desc" data-editable="cf-2-desc">Dark Mocha blend</div>
-        <div class="item-price" data-editable="cf-2-price">₱129</div>
-        <button class="watch-btn" id="watch-cf-2" onclick="openVideoModal(event, 'cf-2', this)">
-          <span class="play-icon">▶</span>
-          <span class="watch-label">Watch how it's made</span>
-        </button>
+      <div class="menu-item" style="opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s;">
+        <div class="item-name">Mocha</div>
+        <div class="item-desc">Dark Mocha</div>
+        <div class="item-price">₱109 <span style="font-size:.75rem;color:var(--muted);">/ 16oz</span></div>
+        <button class="watch-btn" id="watch-cf-2" onclick="openVideoModal(event,'cf-2',this)"><span class="play-icon">▶</span><span class="watch-label">Watch how it's made</span></button>
       </div>
-      <div class="menu-item" style="opacity: 0; transform: translateY(20px); transition: opacity 0.5s, transform 0.5s;">
-        <div class="item-name" data-editable="cf-3-name">Java C.</div>
-        <div class="item-desc" data-editable="cf-3-desc">Dark Mocha Java</div>
-        <div class="item-price" data-editable="cf-3-price">₱139</div>
-        <button class="watch-btn" id="watch-cf-3" onclick="openVideoModal(event, 'cf-3', this)">
-          <span class="play-icon">▶</span>
-          <span class="watch-label">Watch how it's made</span>
-        </button>
+      <div class="menu-item" style="opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s;">
+        <div class="item-name">Mochashew</div>
+        <div class="item-desc">Dark Mocha Cashew</div>
+        <div class="item-price">₱119 <span style="font-size:.75rem;color:var(--muted);">/ 16oz</span></div>
+        <button class="watch-btn" id="watch-cf-3" onclick="openVideoModal(event,'cf-3',this)"><span class="play-icon">▶</span><span class="watch-label">Watch how it's made</span></button>
+      </div>
+      <div class="menu-item" style="opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s;">
+        <div class="item-name">Java</div>
+        <div class="item-desc">Java Chips</div>
+        <div class="item-price">₱119 <span style="font-size:.75rem;color:var(--muted);">/ 16oz</span></div>
+        <button class="watch-btn" id="watch-cf-4" onclick="openVideoModal(event,'cf-4',this)"><span class="play-icon">▶</span><span class="watch-label">Watch how it's made</span></button>
       </div>
     </div>
   </div>
 
-  <p style="margin-top:32px; font-size:.78rem; color:var(--muted); font-style:italic; text-align:center;">* Menu and prices may vary per branch. Updated menu coming soon.</p>
+  <!-- Limited -->
+  <div class="menu-panel" id="tab-limited">
+    <p style="font-size:.75rem;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:8px;"><span style="width:20px;height:1px;background:var(--gold);display:inline-block;"></span>22oz Only</p>
+    <div class="menu-grid">
+      <div class="menu-item" style="opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s;">
+        <div class="item-name">Biscoff</div>
+        <div class="item-desc">Lotus Biscoff</div>
+        <div class="item-price">₱169</div>
+        <button class="watch-btn" id="watch-li-1" onclick="openVideoModal(event,'li-1',this)"><span class="play-icon">▶</span><span class="watch-label">Watch how it's made</span></button>
+      </div>
+      <div class="menu-item" style="opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s;">
+        <div class="item-name">Chocashew</div>
+        <div class="item-desc">Choco Nutella Cashew</div>
+        <div class="item-price">₱159</div>
+        <button class="watch-btn" id="watch-li-2" onclick="openVideoModal(event,'li-2',this)"><span class="play-icon">▶</span><span class="watch-label">Watch how it's made</span></button>
+      </div>
+      <div class="menu-item" style="opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s;">
+        <div class="item-name">Chakit</div>
+        <div class="item-desc">Matcha Kitkat</div>
+        <div class="item-price">₱139</div>
+        <button class="watch-btn" id="watch-li-3" onclick="openVideoModal(event,'li-3',this)"><span class="play-icon">▶</span><span class="watch-label">Watch how it's made</span></button>
+      </div>
+      <div class="menu-item" style="opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s;">
+        <div class="item-name">Vella</div>
+        <div class="item-desc">Vanilla Nutella Fudge</div>
+        <div class="item-price">₱129</div>
+        <button class="watch-btn" id="watch-li-4" onclick="openVideoModal(event,'li-4',this)"><span class="play-icon">▶</span><span class="watch-label">Watch how it's made</span></button>
+      </div>
+      <div class="menu-item" style="opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s;">
+        <div class="item-name">Nuckie</div>
+        <div class="item-desc">Nutella Cookie</div>
+        <div class="item-price">₱129</div>
+        <button class="watch-btn" id="watch-li-5" onclick="openVideoModal(event,'li-5',this)"><span class="play-icon">▶</span><span class="watch-label">Watch how it's made</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Seasonal -->
+  <div class="menu-panel" id="tab-seasonal">
+    <p style="font-size:.75rem;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:8px;"><span style="width:20px;height:1px;background:var(--gold);display:inline-block;"></span>22oz Only</p>
+    <div class="menu-grid">
+      <div class="menu-item" style="opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s;">
+        <div class="item-name">Avocado Grahams</div>
+        <div class="item-desc">Seasonal Special</div>
+        <div class="item-price">₱169</div>
+        <button class="watch-btn" id="watch-se-1" onclick="openVideoModal(event,'se-1',this)"><span class="play-icon">▶</span><span class="watch-label">Watch how it's made</span></button>
+      </div>
+      <div class="menu-item" style="opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s;">
+        <div class="item-name">Mango Grahams</div>
+        <div class="item-desc">Seasonal Special</div>
+        <div class="item-price">₱149</div>
+        <button class="watch-btn" id="watch-se-2" onclick="openVideoModal(event,'se-2',this)"><span class="play-icon">▶</span><span class="watch-label">Watch how it's made</span></button>
+      </div>
+      <div class="menu-item" style="opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s;">
+        <div class="item-name">Pistachio Choco</div>
+        <div class="item-desc">Seasonal Special</div>
+        <div class="item-price">₱169</div>
+        <button class="watch-btn" id="watch-se-3" onclick="openVideoModal(event,'se-3',this)"><span class="play-icon">▶</span><span class="watch-label">Watch how it's made</span></button>
+      </div>
+      <div class="menu-item" style="opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s;">
+        <div class="item-name">Pistachio Cheesecake</div>
+        <div class="item-desc">Seasonal Special</div>
+        <div class="item-price">₱169</div>
+        <button class="watch-btn" id="watch-se-4" onclick="openVideoModal(event,'se-4',this)"><span class="play-icon">▶</span><span class="watch-label">Watch how it's made</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slurpee -->
+  <div class="menu-panel" id="tab-slurpee">
+    <p style="font-size:.75rem;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:8px;"><span style="width:20px;height:1px;background:var(--gold);display:inline-block;"></span>16oz Only · Served with Nata</p>
+    <div class="menu-grid">
+      <div class="menu-item" style="opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s;">
+        <div class="item-name">Lychee</div>
+        <div class="item-desc">Refreshing lychee slurpee with nata</div>
+        <div class="item-price">₱89</div>
+        <button class="watch-btn" id="watch-sl-1" onclick="openVideoModal(event,'sl-1',this)"><span class="play-icon">▶</span><span class="watch-label">Watch how it's made</span></button>
+      </div>
+      <div class="menu-item" style="opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s;">
+        <div class="item-name">Kiwi</div>
+        <div class="item-desc">Kiwi slurpee with nata</div>
+        <div class="item-price">₱89</div>
+        <button class="watch-btn" id="watch-sl-2" onclick="openVideoModal(event,'sl-2',this)"><span class="play-icon">▶</span><span class="watch-label">Watch how it's made</span></button>
+      </div>
+      <div class="menu-item" style="opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s;">
+        <div class="item-name">Blueberry Milk</div>
+        <div class="item-desc">Blueberry milk slurpee with nata</div>
+        <div class="item-price">₱99</div>
+        <button class="watch-btn" id="watch-sl-3" onclick="openVideoModal(event,'sl-3',this)"><span class="play-icon">▶</span><span class="watch-label">Watch how it's made</span></button>
+      </div>
+      <div class="menu-item" style="opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s;">
+        <div class="item-name">Strawberry Milk</div>
+        <div class="item-desc">Strawberry milk slurpee with nata</div>
+        <div class="item-price">₱99</div>
+        <button class="watch-btn" id="watch-sl-4" onclick="openVideoModal(event,'sl-4',this)"><span class="play-icon">▶</span><span class="watch-label">Watch how it's made</span></button>
+      </div>
+      <div class="menu-item" style="opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s;">
+        <div class="item-name">Green Apple Milk</div>
+        <div class="item-desc">Green apple milk slurpee with nata</div>
+        <div class="item-price">₱99</div>
+        <button class="watch-btn" id="watch-sl-5" onclick="openVideoModal(event,'sl-5',this)"><span class="play-icon">▶</span><span class="watch-label">Watch how it's made</span></button>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top:32px; font-size:.78rem; color:var(--muted); font-style:italic; text-align:center;">* Prices shown are for base size. Menu and prices may vary per branch.</p>
 </section>
 
 <!-- ABOUT -->
@@ -1188,54 +1239,70 @@
   <div class="section-title">Our Branches</div>
 
   <div class="branches-grid">
-    <div class="branch-card" style="opacity: 0; transform: translateY(20px); transition: opacity 0.5s, transform 0.5s;">
+
+    <!-- Branch 1: Arnaldo Blvd -->
+    <div class="branch-card">
       <div class="branch-num">01</div>
-      <div class="branch-name" data-editable="br-1-name">Roxas City</div>
-      <div class="branch-location" data-editable="br-1-loc">CoOzy Food Park, Arnaldo Blvd.,<br>Roxas City, Philippines 5800</div>
+      <div class="branch-name" data-editable="br-1-name">Arnaldo Blvd</div>
+      <div class="branch-location" data-editable="br-1-loc">CoOzy Food Park, Arnaldo Blvd.<br>Near SM City &amp; CPC Engineering</div>
+      <div class="branch-services" data-editable="br-1-services">Dine In &nbsp;·&nbsp; Pick Up &nbsp;·&nbsp; Delivery</div>
       <div class="branch-links">
-        <a href="https://www.facebook.com/profile.php?id=100087951589602" target="_blank" class="branch-link">
-          <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"></path></svg>
-          Facebook
-        </a>
         <a href="https://foodpanda.go.link/cjV9I" target="_blank" class="branch-link">
-          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
           FoodPanda
         </a>
-      </div>
-    </div>
-
-    <div class="branch-card" style="opacity: 0; transform: translateY(20px); transition: opacity 0.5s, transform 0.5s;">
-      <div class="branch-num">02</div>
-      <div class="branch-name" data-editable="br-2-name">Las Piñas</div>
-      <div class="branch-location" data-editable="br-2-loc" style="color:var(--muted);font-style:italic;">Location coming soon</div>
-      <div class="branch-links">
-        <a href="https://www.facebook.com/profile.php?id=100090357404367" target="_blank" class="branch-link">
-          <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"></path></svg>
-          Facebook
+        <a id="br-1-pin-link" href="#" target="_blank" class="branch-link branch-pin-link" style="display:none;">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Map Pin
         </a>
+        <!-- Admin-only: pin URL input -->
+        <div class="branch-pin-admin" id="br-1-pin-wrap" style="display:none;">
+          <input class="branch-pin-input" id="br-1-pin-input" type="text" placeholder="Paste Google Maps link…" data-pin="br-1" oninput="savePinLive('br-1',this.value)">
+          <span class="branch-pin-hint">Paste your Google Maps share link here</span>
+        </div>
       </div>
     </div>
 
-    <div class="branch-card" style="opacity: 0; transform: translateY(20px); transition: opacity 0.5s, transform 0.5s;">
-      <div class="branch-num">03</div>
-      <div class="branch-name" data-editable="br-3-name">Branch 3</div>
-      <div class="branch-location" data-editable="br-3-loc" style="color:var(--muted);font-style:italic;">Location coming soon</div>
+    <!-- Branch 2: Brgy Dayao -->
+    <div class="branch-card">
+      <div class="branch-num">02</div>
+      <div class="branch-name" data-editable="br-2-name">Brgy Dayao</div>
+      <div class="branch-location" data-editable="br-2-loc">Near CAPSU Dayao</div>
+      <div class="branch-services" data-editable="br-2-services">Pick Up Only &nbsp;·&nbsp; Delivery</div>
       <div class="branch-links">
         <a href="https://foodpanda.go.link/jvkV3" target="_blank" class="branch-link">
-          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
           FoodPanda
         </a>
+        <a id="br-2-pin-link" href="#" target="_blank" class="branch-link branch-pin-link" style="display:none;">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Map Pin
+        </a>
+        <div class="branch-pin-admin" id="br-2-pin-wrap" style="display:none;">
+          <input class="branch-pin-input" id="br-2-pin-input" type="text" placeholder="Paste Google Maps link…" data-pin="br-2" oninput="savePinLive('br-2',this.value)">
+          <span class="branch-pin-hint">Paste your Google Maps share link here</span>
+        </div>
       </div>
     </div>
 
-    <div class="branch-card" style="opacity: 0; transform: translateY(20px); transition: opacity 0.5s, transform 0.5s;">
-      <div class="branch-num">04</div>
-      <div class="branch-name" data-editable="br-4-name">Branch 4</div>
-      <div class="branch-location" data-editable="br-4-loc" style="color:var(--muted);font-style:italic;">Details coming soon</div>
+    <!-- Branch 3: Business Center -->
+    <div class="branch-card">
+      <div class="branch-num">03</div>
+      <div class="branch-name" data-editable="br-3-name">Business Center</div>
+      <div class="branch-location" data-editable="br-3-loc">Food Stall</div>
+      <div class="branch-services" data-editable="br-3-services">Pick Up &nbsp;·&nbsp; Delivery</div>
       <div class="branch-links">
-        <span class="coming-soon">Stay Tuned</span>
+        <a id="br-3-pin-link" href="#" target="_blank" class="branch-link branch-pin-link" style="display:none;">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Map Pin
+        </a>
+        <div class="branch-pin-admin" id="br-3-pin-wrap" style="display:none;">
+          <input class="branch-pin-input" id="br-3-pin-input" type="text" placeholder="Paste Google Maps link…" data-pin="br-3" oninput="savePinLive('br-3',this.value)">
+          <span class="branch-pin-hint">Paste your Google Maps share link here</span>
+        </div>
       </div>
     </div>
+
   </div>
 </section>
 
@@ -1351,12 +1418,11 @@
     if (e.key === 'Escape') closeAdminLogin();
   });
 
-  // Open admin login if URL has ?admin query
+  // Open admin login if URL ends with #admin or /admin
   (function checkAdminUrl() {
-    if (window.location.search.includes('admin')) {
+    if (window.location.hash === '#admin' || window.location.pathname.endsWith('/admin')) {
       openAdminLogin();
-      // Clean ?admin from URL bar
-      history.replaceState(null, '', window.location.pathname);
+      history.replaceState(null, '', window.location.pathname.replace(/\/admin$/, '') || window.location.pathname);
     }
   })();
 
@@ -1466,6 +1532,73 @@
     });
   }
   loadSavedEdits();
+
+  // ── MAP PIN LINKS (admin-editable, saved to KV + localStorage) ──
+  const PIN_BRANCHES = ['br-1', 'br-2', 'br-3'];
+
+  function savePinLive(id, url) {
+    const link = document.getElementById(id + '-pin-link');
+    url = url.trim();
+    if (url) {
+      link.href = url;
+      link.style.display = '';
+    } else {
+      link.href = '#';
+      link.style.display = 'none';
+    }
+    // Persist to localStorage immediately; full save happens on "Save Changes"
+    const pins = getPinsFromStorage();
+    pins[id] = url;
+    localStorage.setItem('blisshue_pins', JSON.stringify(pins));
+  }
+
+  function getPinsFromStorage() {
+    try { return JSON.parse(localStorage.getItem('blisshue_pins') || '{}'); } catch(e) { return {}; }
+  }
+
+  function loadPins(data) {
+    PIN_BRANCHES.forEach(id => {
+      const url = (data && data[id]) ? data[id].trim() : '';
+      const link = document.getElementById(id + '-pin-link');
+      const input = document.getElementById(id + '-pin-input');
+      if (input) input.value = url;
+      if (link) {
+        if (url) { link.href = url; link.style.display = ''; }
+        else { link.href = '#'; link.style.display = 'none'; }
+      }
+    });
+  }
+
+  // Load pins from KV first, fallback to localStorage
+  (async function loadPinsOnStart() {
+    let pinData = null;
+    try {
+      const res = await fetch(KV_API.replace('?page=index', '?page=index-pins'));
+      if (res.ok) pinData = await res.json();
+    } catch(e) {}
+    if (!pinData || Object.keys(pinData).length === 0) pinData = getPinsFromStorage();
+    loadPins(pinData);
+  })();
+
+  // Hook into existing saveChanges to also save pins
+  const _origSaveChanges = saveChanges;
+  saveChanges = async function() {
+    await _origSaveChanges();
+    // Save pin data separately
+    const pins = {};
+    PIN_BRANCHES.forEach(id => {
+      const input = document.getElementById(id + '-pin-input');
+      if (input) pins[id] = input.value.trim();
+    });
+    localStorage.setItem('blisshue_pins', JSON.stringify(pins));
+    try {
+      await fetch(KV_API.replace('?page=index', '?page=index-pins'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(pins),
+      });
+    } catch(e) {}
+  };
 </script>
 
 
