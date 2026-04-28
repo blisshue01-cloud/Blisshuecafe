@@ -1696,9 +1696,6 @@ Please confirm my order! 🎉`;
     document.body.style.overflow = '';
   }
 
-  function isMobile() {
-    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  }
   function isIOS() {
     return /iPhone|iPad|iPod/i.test(navigator.userAgent);
   }
@@ -1706,22 +1703,16 @@ Please confirm my order! 🎉`;
   function sendToFacebook() {
     const msg = buildOrderMessage();
     const pageId = FB_PAGES[selectedBranch] || FB_PAGES['Arnaldo Blvd'];
-    const encodedMsg = encodeURIComponent(msg);
-    const webUrl = `https://m.me/${pageId}?text=${encodedMsg}`;
-    // Deep link opens Messenger app directly on Android & iOS
-    const appUrl = `fb-messenger://user-thread/${pageId}`;
+    const messengerUrl = `https://m.me/${pageId}?text=${encodeURIComponent(msg)}`;
 
-    if (isMobile()) {
-      // Copy order to clipboard as fallback (text pre-fill not guaranteed in app)
+    if (isIOS()) {
       navigator.clipboard.writeText(msg).catch(() => {});
       document.getElementById('iosTip').style.display = 'block';
-      // Try to open Messenger app; fall back to m.me after short delay
-      window.location.href = appUrl;
       setTimeout(() => {
-        window.location.href = webUrl;
-      }, 1500);
+        window.location.href = messengerUrl;
+      }, 300);
     } else {
-      window.open(webUrl, '_blank');
+      window.open(messengerUrl, '_blank');
     }
   }
 
