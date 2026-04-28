@@ -781,13 +781,17 @@
         Select Branch <span style="color:var(--gold);margin-left:4px;">*</span>
       </div>
       <div class="branch-grid">
-        <button class="branch-btn" data-branch="Roxas City" onclick="selectBranch(this)">
-          <span class="branch-btn-name" data-editable="order-br-1-name">Roxas City</span>
-          <span class="branch-btn-loc" data-editable="order-br-1-loc">CoOzy Food Park, Arnaldo Blvd., Roxas City 5800</span>
+        <button class="branch-btn" data-branch="Arnaldo Blvd" onclick="selectBranch(this)">
+          <span class="branch-btn-name" data-editable="order-br-1-name">Arnaldo Blvd</span>
+          <span class="branch-btn-loc" data-editable="order-br-1-loc">CoOzy Food Park · Near SM City &amp; CPC Engineering</span>
         </button>
-        <button class="branch-btn" data-branch="Las Piñas" onclick="selectBranch(this)">
-          <span class="branch-btn-name" data-editable="order-br-2-name">Las Piñas</span>
-          <span class="branch-btn-loc" data-editable="order-br-2-loc">Location coming soon — inquire via Facebook</span>
+        <button class="branch-btn" data-branch="Brgy Dayao" onclick="selectBranch(this)">
+          <span class="branch-btn-name" data-editable="order-br-2-name">Brgy Dayao</span>
+          <span class="branch-btn-loc" data-editable="order-br-2-loc">Near CAPSU Dayao</span>
+        </button>
+        <button class="branch-btn" data-branch="Business Center" onclick="selectBranch(this)" style="grid-column: 1 / -1;">
+          <span class="branch-btn-name" data-editable="order-br-3-name">Business Center</span>
+          <span class="branch-btn-loc" data-editable="order-br-3-loc">Food Stall</span>
         </button>
       </div>
     </div>
@@ -842,48 +846,69 @@
       </div>
 
       <div class="menu-tabs">
-        <button class="menu-tab active" onclick="switchMenuTab(event,'signature')">Signature Frappe</button>
-        <button class="menu-tab" onclick="switchMenuTab(event,'cookies')">Cookies</button>
-        <button class="menu-tab" onclick="switchMenuTab(event,'nutella')">Nutella</button>
+        <button class="menu-tab active" onclick="switchMenuTab(event,'noncoffee')">Non Coffee</button>
         <button class="menu-tab" onclick="switchMenuTab(event,'coffee')">Coffee</button>
+        <button class="menu-tab" onclick="switchMenuTab(event,'limited')">Limited</button>
+        <button class="menu-tab" onclick="switchMenuTab(event,'seasonal')">Seasonal</button>
+        <button class="menu-tab" onclick="switchMenuTab(event,'slurpee')">Slurpee</button>
       </div>
 
-      <!-- Signature Frappe -->
-      <div class="menu-panel active" id="menu-signature">
+      <!-- Non Coffee (16oz base, +20 for 22oz) -->
+      <div class="menu-panel active" id="menu-noncoffee">
         <div class="menu-items">
-          <div class="menu-item-row" id="row-Yummie"><div class="menu-item-info"><span class="menu-item-name">Yummie</span><span class="menu-item-desc">Signature blended frappe</span></div><span class="menu-item-price">₱119</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Yummie',119)"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
-          <div class="menu-item-row" id="row-Valmond"><div class="menu-item-info"><span class="menu-item-name">Valmond</span><span class="menu-item-desc">Vanilla almond frappe</span></div><span class="menu-item-price">₱119</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Valmond',119)"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
-          <div class="menu-item-row" id="row-Tarow"><div class="menu-item-info"><span class="menu-item-name">Tarow</span><span class="menu-item-desc">Taro quezo almonds</span></div><span class="menu-item-price">₱119</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Tarow',119)"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
-          <div class="menu-item-row" id="row-Velto"><div class="menu-item-info"><span class="menu-item-name">Velto</span><span class="menu-item-desc">Refreshing Ube Quezo</span></div><span class="menu-item-price">₱119</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Velto',119)"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+          <div class="menu-item-row" id="row-Fudgie"><div class="menu-item-info"><span class="menu-item-name">Fudgie</span><span class="menu-item-desc">Dark Choco Almond Fudge</span></div><span class="menu-item-price">₱109</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Fudgie',109,'sizable')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+          <div class="menu-item-row" id="row-Tella"><div class="menu-item-info"><span class="menu-item-name">Tella</span><span class="menu-item-desc">Nutella Chips Cheesecake</span></div><span class="menu-item-price">₱109</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Tella',109,'sizable')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+          <div class="menu-item-row" id="row-Valmond"><div class="menu-item-info"><span class="menu-item-name">Valmond</span><span class="menu-item-desc">Vanilla Almonds</span></div><span class="menu-item-price">₱109</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Valmond',109,'sizable')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+          <div class="menu-item-row" id="row-Velto"><div class="menu-item-info"><span class="menu-item-name">Velto</span><span class="menu-item-desc">Red Velvet Queso Oreo</span></div><span class="menu-item-price">₱109</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Velto',109,'sizable')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+          <div class="menu-item-row" id="row-Tarow"><div class="menu-item-info"><span class="menu-item-name">Tarow</span><span class="menu-item-desc">Taro Queso Almonds</span></div><span class="menu-item-price">₱109</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Tarow',109,'sizable')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+          <div class="menu-item-row" id="row-Ochee"><div class="menu-item-info"><span class="menu-item-name">Ochee</span><span class="menu-item-desc">Oreo Cheesecake</span></div><span class="menu-item-price">₱99</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Ochee',99,'sizable')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+          <div class="menu-item-row" id="row-Darko"><div class="menu-item-info"><span class="menu-item-name">Darko</span><span class="menu-item-desc">Dark Choco Oreo</span></div><span class="menu-item-price">₱99</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Darko',99,'sizable')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+          <div class="menu-item-row" id="row-Cookies"><div class="menu-item-info"><span class="menu-item-name">Cookies</span><span class="menu-item-desc">Cookies &amp; Cream</span></div><span class="menu-item-price">₱99</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Cookies',99,'sizable')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
         </div>
       </div>
 
-      <!-- Cookies -->
-      <div class="menu-panel" id="menu-cookies">
-        <div class="menu-items">
-          <div class="menu-item-row" id="row-Biscoff"><div class="menu-item-info"><span class="menu-item-name">Biscoff</span><span class="menu-item-desc">Lotus Biscoff blend</span></div><span class="menu-item-price">₱169</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Biscoff',169)"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
-          <div class="menu-item-row" id="row-Ochee"><div class="menu-item-info"><span class="menu-item-name">Ochee</span><span class="menu-item-desc">Oreo Cheesecake</span></div><span class="menu-item-price">₱119</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Ochee',119)"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
-          <div class="menu-item-row" id="row-Darko"><div class="menu-item-info"><span class="menu-item-name">Darko</span><span class="menu-item-desc">Dark Choco Drink</span></div><span class="menu-item-price">₱119</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Darko',119)"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
-          <div class="menu-item-row" id="row-Cookie"><div class="menu-item-info"><span class="menu-item-name">Cookie</span><span class="menu-item-desc">Cookies &amp; Crème</span></div><span class="menu-item-price">₱119</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Cookie',119)"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
-        </div>
-      </div>
-
-      <!-- Nutella -->
-      <div class="menu-panel" id="menu-nutella">
-        <div class="menu-items">
-          <div class="menu-item-row" id="row-NutellaCashew"><div class="menu-item-info"><span class="menu-item-name">Cashew</span><span class="menu-item-desc">Caramel Cashew blend</span></div><span class="menu-item-price">₱159</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Cashew',159)"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
-          <div class="menu-item-row" id="row-Tella"><div class="menu-item-info"><span class="menu-item-name">Tella</span><span class="menu-item-desc">Dark Choco Nutella Cashew</span></div><span class="menu-item-price">₱119</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Tella',119)"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
-          <div class="menu-item-row" id="row-Vella"><div class="menu-item-info"><span class="menu-item-name">Vella</span><span class="menu-item-desc">Nutella Fudge</span></div><span class="menu-item-price">₱119</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Vella',119)"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
-          <div class="menu-item-row" id="row-Muckie"><div class="menu-item-info"><span class="menu-item-name">Muckie</span><span class="menu-item-desc">Milk Nutella Fudge</span></div><span class="menu-item-price">₱119</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Muckie',119)"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
-        </div>
-      </div>
-
-      <!-- Coffee -->
+      <!-- Coffee (16oz base, +20 for 22oz) -->
       <div class="menu-panel" id="menu-coffee">
         <div class="menu-items">
-          <div class="menu-item-row" id="row-CarmelMac"><div class="menu-item-info"><span class="menu-item-name">Carmel Mac</span><span class="menu-item-desc">Caramel Macchiato</span></div><span class="menu-item-price">₱129</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Carmel Mac',129)"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
-          <div class="menu-item-row" id="row-Mocha"><div class="menu-item-info"><span class="menu-item-name">Mocha</span><span class="menu-item-desc">Dark Mocha blend</span></div><span class="menu-item-price">₱129</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Mocha',129)"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
-          <div class="menu-item-row" id="row-JavaC"><div class="menu-item-info"><span class="menu-item-name">Java C.</span><span class="menu-item-desc">Dark Mocha Java</span></div><span class="menu-item-price">₱139</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Java C.',139)"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+          <div class="menu-item-row" id="row-Carmel"><div class="menu-item-info"><span class="menu-item-name">Carmel</span><span class="menu-item-desc">Caramel Macchiato</span></div><span class="menu-item-price">₱109</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Carmel',109,'sizable')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+          <div class="menu-item-row" id="row-Mocha"><div class="menu-item-info"><span class="menu-item-name">Mocha</span><span class="menu-item-desc">Dark Mocha</span></div><span class="menu-item-price">₱109</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Mocha',109,'sizable')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+          <div class="menu-item-row" id="row-Mochashew"><div class="menu-item-info"><span class="menu-item-name">Mochashew</span><span class="menu-item-desc">Dark Mocha Cashew</span></div><span class="menu-item-price">₱119</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Mochashew',119,'sizable')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+          <div class="menu-item-row" id="row-Java"><div class="menu-item-info"><span class="menu-item-name">Java</span><span class="menu-item-desc">Java Chips</span></div><span class="menu-item-price">₱119</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Java',119,'sizable')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+        </div>
+      </div>
+
+      <!-- Limited (22oz only) -->
+      <div class="menu-panel" id="menu-limited">
+        <p style="font-size:.7rem;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;margin-bottom:16px;">22oz Only</p>
+        <div class="menu-items">
+          <div class="menu-item-row" id="row-Biscoff"><div class="menu-item-info"><span class="menu-item-name">Biscoff</span><span class="menu-item-desc">Lotus Biscoff</span></div><span class="menu-item-price">₱169</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Biscoff',169,'fixed22')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+          <div class="menu-item-row" id="row-Chocashew"><div class="menu-item-info"><span class="menu-item-name">Chocashew</span><span class="menu-item-desc">Choco Nutella Cashew</span></div><span class="menu-item-price">₱159</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Chocashew',159,'fixed22')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+          <div class="menu-item-row" id="row-Chakit"><div class="menu-item-info"><span class="menu-item-name">Chakit</span><span class="menu-item-desc">Matcha Kitkat</span></div><span class="menu-item-price">₱139</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Chakit',139,'fixed22')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+          <div class="menu-item-row" id="row-Vella"><div class="menu-item-info"><span class="menu-item-name">Vella</span><span class="menu-item-desc">Vanilla Nutella Fudge</span></div><span class="menu-item-price">₱129</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Vella',129,'fixed22')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+          <div class="menu-item-row" id="row-Nuckie"><div class="menu-item-info"><span class="menu-item-name">Nuckie</span><span class="menu-item-desc">Nutella Cookie</span></div><span class="menu-item-price">₱129</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Nuckie',129,'fixed22')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+        </div>
+      </div>
+
+      <!-- Seasonal (22oz only) -->
+      <div class="menu-panel" id="menu-seasonal">
+        <p style="font-size:.7rem;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;margin-bottom:16px;">22oz Only</p>
+        <div class="menu-items">
+          <div class="menu-item-row" id="row-AvocadoGrahams"><div class="menu-item-info"><span class="menu-item-name">Avocado Grahams</span><span class="menu-item-desc">Seasonal Special</span></div><span class="menu-item-price">₱169</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Avocado Grahams',169,'fixed22')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+          <div class="menu-item-row" id="row-MangoGrahams"><div class="menu-item-info"><span class="menu-item-name">Mango Grahams</span><span class="menu-item-desc">Seasonal Special</span></div><span class="menu-item-price">₱149</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Mango Grahams',149,'fixed22')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+          <div class="menu-item-row" id="row-PistachioChoco"><div class="menu-item-info"><span class="menu-item-name">Pistachio Choco</span><span class="menu-item-desc">Seasonal Special</span></div><span class="menu-item-price">₱169</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Pistachio Choco',169,'fixed22')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+          <div class="menu-item-row" id="row-PistachioCheesecake"><div class="menu-item-info"><span class="menu-item-name">Pistachio Cheesecake</span><span class="menu-item-desc">Seasonal Special</span></div><span class="menu-item-price">₱169</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Pistachio Cheesecake',169,'fixed22')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+        </div>
+      </div>
+
+      <!-- Slurpee (16oz only, served with nata) -->
+      <div class="menu-panel" id="menu-slurpee">
+        <p style="font-size:.7rem;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;margin-bottom:16px;">16oz Only · Served with Nata</p>
+        <div class="menu-items">
+          <div class="menu-item-row" id="row-Lychee"><div class="menu-item-info"><span class="menu-item-name">Lychee</span><span class="menu-item-desc">Lychee Slurpee with Nata</span></div><span class="menu-item-price">₱89</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Lychee',89,'slurpee')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+          <div class="menu-item-row" id="row-Kiwi"><div class="menu-item-info"><span class="menu-item-name">Kiwi</span><span class="menu-item-desc">Kiwi Slurpee with Nata</span></div><span class="menu-item-price">₱89</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Kiwi',89,'slurpee')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+          <div class="menu-item-row" id="row-BlueberryMilk"><div class="menu-item-info"><span class="menu-item-name">Blueberry Milk</span><span class="menu-item-desc">Blueberry Milk Slurpee with Nata</span></div><span class="menu-item-price">₱99</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Blueberry Milk',99,'slurpee')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+          <div class="menu-item-row" id="row-StrawberryMilk"><div class="menu-item-info"><span class="menu-item-name">Strawberry Milk</span><span class="menu-item-desc">Strawberry Milk Slurpee with Nata</span></div><span class="menu-item-price">₱99</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Strawberry Milk',99,'slurpee')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+          <div class="menu-item-row" id="row-GreenAppleMilk"><div class="menu-item-info"><span class="menu-item-name">Green Apple Milk</span><span class="menu-item-desc">Green Apple Milk Slurpee with Nata</span></div><span class="menu-item-price">₱99</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Green Apple Milk',99,'slurpee')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
         </div>
       </div>
     </div>
@@ -1087,6 +1112,14 @@
     if (e.key === 'Escape') closeAdminLogin();
   });
 
+  // Open admin login if URL ends with #admin or /admin
+  (function checkAdminUrl() {
+    if (window.location.hash === '#admin' || window.location.pathname.endsWith('/admin')) {
+      openAdminLogin();
+      history.replaceState(null, '', window.location.pathname.replace(/\/admin$/, '') || window.location.pathname);
+    }
+  })();
+
   // Admin login: triple-tap/click the header logo within 1.5s
   (function setupAdminTrigger() {
     let _taps = 0, _tapTimer = null;
@@ -1205,8 +1238,9 @@
   let cart = [];
 
   const FB_PAGES = {
-    'Roxas City': 'Blisshuecaferxs',
-    'Las Piñas': '100090357404367'
+    'Arnaldo Blvd': 'Blisshuecaferxs',
+    'Brgy Dayao': 'Blisshuecaferxs',
+    'Business Center': 'Blisshuecaferxs'
   };
 
   const ADDONS = [
@@ -1248,10 +1282,20 @@
   }
 
   // ── CUSTOMIZER ──
-  function buildCustomizerHTML() {
-    const sizeHTML = `
-      <div class="size-opt sel" onclick="selSize(this,0)">16oz<small>Normal</small></div>
-      <div class="size-opt" onclick="selSize(this,20)">22oz<small>+₱20</small></div>`;
+  // sizeMode: 'sizable' = 16oz default, +₱20 for 22oz
+  //           'fixed22' = 22oz only (Limited & Seasonal)
+  //           'slurpee' = 16oz only (Slurpee)
+  function buildCustomizerHTML(sizeMode) {
+    let sizeHTML = '';
+    if (sizeMode === 'sizable') {
+      sizeHTML = `
+        <div class="size-opt sel" onclick="selSize(this,0)">16oz<small>Normal</small></div>
+        <div class="size-opt" onclick="selSize(this,20)">22oz<small>+₱20</small></div>`;
+    } else if (sizeMode === 'fixed22') {
+      sizeHTML = `<div class="size-opt sel" onclick="selSize(this,0)" style="pointer-events:none;opacity:.7;">22oz<small>Only</small></div>`;
+    } else { // slurpee — 16oz only
+      sizeHTML = `<div class="size-opt sel" onclick="selSize(this,0)" style="pointer-events:none;opacity:.7;">16oz<small>Only</small></div>`;
+    }
 
     const addonHTML = ADDONS.map(a =>
       `<div class="addon-opt" onclick="togAddon(this,${a.price})">
@@ -1262,9 +1306,11 @@
     const sweetHTML = ['Less Sweet','Normal Sweet','Extra Sweet','Custom'].map((s,i) =>
       `<div class="sweet-opt${i===1?' sel':''}" onclick="selSweet(this,'${s}')">${s}</div>`).join('');
 
+    const sizeLabel = sizeMode === 'fixed22' ? '22oz' : sizeMode === 'slurpee' ? '16oz' : 'Size';
+
     return `
       <div class="cust-row">
-        <div class="cust-row-label">Size</div>
+        <div class="cust-row-label">${sizeLabel}</div>
         <div class="size-opts">${sizeHTML}</div>
       </div>
       <div class="cust-row">
@@ -1279,7 +1325,8 @@
       <button class="add-cart-btn" onclick="addToCart(this)">Add to Order →</button>`;
   }
 
-  function toggleCustomizer(btn, name, basePrice) {
+  function toggleCustomizer(btn, name, basePrice, sizeMode) {
+    sizeMode = sizeMode || 'sizable';
     const panel = btn.nextElementSibling;
     const isOpen = panel.classList.contains('open');
 
@@ -1291,9 +1338,10 @@
 
     if (!isOpen) {
       if (!panel.dataset.built) {
-        panel.innerHTML = buildCustomizerHTML();
+        panel.innerHTML = buildCustomizerHTML(sizeMode);
         panel.dataset.itemName = name;
         panel.dataset.basePrice = basePrice;
+        panel.dataset.sizeMode = sizeMode;
         panel.dataset.built = '1';
       }
       panel.classList.add('open');
@@ -1339,9 +1387,18 @@
     const basePrice = parseInt(panel.dataset.basePrice);
 
     // Size
-    const sizeEl = panel.querySelector('.size-opt.sel');
-    const sizeName = sizeEl.childNodes[0].textContent.trim();
-    const sizeExtra = parseInt(sizeEl.getAttribute('onclick').match(/selSize\(this,(\d+)\)/)[1]);
+    const sizeMode = panel.dataset.sizeMode || 'sizable';
+    let sizeName, sizeExtra;
+    if (sizeMode === 'fixed22') {
+      sizeName = '22oz'; sizeExtra = 0;
+    } else if (sizeMode === 'slurpee') {
+      sizeName = '16oz'; sizeExtra = 0;
+    } else {
+      const sizeEl = panel.querySelector('.size-opt.sel');
+      sizeName = sizeEl ? sizeEl.childNodes[0].textContent.trim() : '16oz';
+      const sizeMatch = sizeEl ? sizeEl.getAttribute('onclick').match(/selSize\(this,(\d+)\)/) : null;
+      sizeExtra = sizeMatch ? parseInt(sizeMatch[1]) : 0;
+    }
 
     // Add-ons
     let addons = [], addonTotal = 0;
