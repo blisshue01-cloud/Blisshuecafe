@@ -150,6 +150,10 @@
     font-size: .95rem; letter-spacing: .1em; color: var(--white); display: block;
   }
   .service-btn.selected .service-label { color: var(--gold); }
+  .service-btn.disabled {
+    opacity: .38; cursor: not-allowed; pointer-events: none;
+    border-style: dashed;
+  }
 
   /* ── INPUTS ── */
   .form-group { margin-bottom: 16px; }
@@ -516,14 +520,20 @@
   body.admin-mode [data-editable]:hover { outline-color: var(--gold); background: rgba(201,168,76,.04); }
   body.admin-mode [data-editable]:focus { outline: 2px solid var(--gold); }
 
-
-    .page-wrap { grid-template-columns: 1fr; }
-    .summary-wrap { position: static; order: -1; }
+  @media (max-width: 860px) {
+    .page-wrap { grid-template-columns: 1fr; padding: 24px 4% 100px; }
+    .summary-wrap { display: none; }
   }
   @media (max-width: 520px) {
+    .page-wrap { padding: 16px 3% 120px; gap: 16px; }
+    .card { padding: 18px 14px; }
     .branch-grid { grid-template-columns: 1fr; }
     .service-grid { gap: 8px; }
     .service-btn { padding: 14px 8px; }
+    .section-heading { font-size: 1.8rem; margin-bottom: 16px; }
+    .menu-tab { font-size: .65rem; padding: 8px 10px; }
+    .addon-grid { grid-template-columns: 1fr; }
+    .place-order-btn { font-size: .85rem; padding: 16px; }
   }
 
   /* ── CUSTOMIZER DROPDOWN ── */
@@ -781,7 +791,7 @@
         Select Branch <span style="color:var(--gold);margin-left:4px;">*</span>
       </div>
       <div class="branch-grid">
-        <button class="branch-btn" data-branch="Arnaldo Blvd" onclick="selectBranch(this)">
+        <button class="branch-btn" data-branch="Coozy Food Park" onclick="selectBranch(this)">
           <span class="branch-btn-name" data-editable="order-br-1-name">Arnaldo Blvd</span>
           <span class="branch-btn-loc" data-editable="order-br-1-loc">CoOzy Food Park · Near SM City &amp; CPC Engineering</span>
         </button>
@@ -814,15 +824,17 @@
       <!-- SERVICE TYPE -->
       <div class="form-group" style="margin-top:24px;">
         <label>Service Type <span>*</span></label>
-        <div class="service-grid" style="grid-template-columns: repeat(2,1fr);">
-          <button class="service-btn" data-service="Pickup" onclick="selectService(this)">
-            <span class="service-icon">🚶</span>
-            <span class="service-label">Pickup</span>
-          </button>
-          <button class="service-btn" data-service="Delivery" onclick="selectService(this)">
-            <span class="service-icon">🛵</span>
-            <span class="service-label">Delivery</span>
-          </button>
+        <div id="serviceGrid" class="service-grid" style="grid-template-columns: repeat(3,1fr);">
+          <!-- Rendered dynamically by updateServiceOptions() -->
+        </div>
+        <!-- Foodpanda link shown for branches that support it -->
+        <div id="foodpandaRow" style="display:none; margin-top:12px;">
+          <a id="foodpandaLink" href="https://www.foodpanda.ph" target="_blank"
+             style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;
+                    background:#d70f64;color:#fff;text-decoration:none;border-radius:4px;
+                    font-size:.8rem;letter-spacing:.08em;font-weight:600;">
+            🐼 Order via Foodpanda
+          </a>
         </div>
       </div>
 
@@ -1238,9 +1250,10 @@
   let cart = [];
 
   const FB_PAGES = {
-    'Arnaldo Blvd': 'Blisshuecaferxs',
+    'Coozy Food Park': 'Blisshuecaferxs',
     'Brgy Dayao': 'Blisshuecaferxs',
-    'Business Center': 'Blisshuecaferxs'
+    'Business Center': 'Blisshuecaferxs',
+    'Arnaldo Blvd': 'Blisshuecaferxs'
   };
 
   const ADDONS = [
@@ -1257,6 +1270,8 @@
     document.querySelectorAll('.branch-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
     selectedBranch = btn.dataset.branch;
+    selectedService = '';
+    updateServiceOptions(selectedBranch);
     updateSummary();
   }
   function selectService(btn) {
@@ -1265,6 +1280,67 @@
     selectedService = btn.dataset.service;
     document.getElementById('addressGroup').style.display = selectedService === 'Delivery' ? 'block' : 'none';
     updateSummary();
+  }
+
+  // ── BRANCH-AWARE SERVICE OPTIONS ──
+  // Config per branch: which buttons are clickable, whether Foodpanda shows, and the link
+  const branchServiceConfig = {
+    'Coozy Food Park': {
+      buttons: [
+        { service: 'Dine In',  icon: '🍽️',  clickable: true },
+        { service: 'Pickup',   icon: '🚶',   clickable: true },
+        { service: 'Delivery', icon: '🛵',   clickable: false },
+      ],
+      foodpanda: true,
+      foodpandaUrl: 'https://www.foodpanda.ph',
+    },
+    'Brgy Dayao': {
+      buttons: [
+        { service: 'Pickup',   icon: '🚶',   clickable: true },
+        { service: 'Delivery', icon: '🛵',   clickable: false },
+      ],
+      foodpanda: true,
+      foodpandaUrl: 'https://www.foodpanda.ph',
+    },
+    'Business Center': {
+      buttons: [
+        { service: 'Pickup',   icon: '🚶',   clickable: true },
+        { service: 'Delivery', icon: '🛵',   clickable: true },
+      ],
+      foodpanda: false,
+    },
+  };
+
+  function updateServiceOptions(branch) {
+    const grid = document.getElementById('serviceGrid');
+    const fpRow = document.getElementById('foodpandaRow');
+    const fpLink = document.getElementById('foodpandaLink');
+    const config = branchServiceConfig[branch];
+
+    // Reset address field
+    document.getElementById('addressGroup').style.display = 'none';
+
+    if (!config) { grid.innerHTML = ''; fpRow.style.display = 'none'; return; }
+
+    const cols = config.buttons.length;
+    grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+
+    grid.innerHTML = config.buttons.map(b => {
+      const disabledClass = b.clickable ? '' : ' disabled';
+      const onclick = b.clickable ? `onclick="selectService(this)"` : '';
+      return `<button class="service-btn${disabledClass}" data-service="${b.service}" ${onclick}>
+        <span class="service-icon">${b.icon}</span>
+        <span class="service-label">${b.service}</span>
+      </button>`;
+    }).join('');
+
+    // Foodpanda row
+    if (config.foodpanda) {
+      fpLink.href = config.foodpandaUrl;
+      fpRow.style.display = 'block';
+    } else {
+      fpRow.style.display = 'none';
+    }
   }
   function selectPayment(el, name) {
     document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
@@ -1593,7 +1669,8 @@ Please confirm my order! 🎉`;
   function validateForm() {
     const name = document.getElementById('custName').value.trim();
     const phone = document.getElementById('custPhone').value.trim();
-    if (!selectedBranch || !selectedService || !selectedPayment || !name || !phone || cart.length === 0) return false;
+    const isFoodpandaOnly = selectedBranch === 'Coozy Food Park';
+    if (!selectedBranch || (!isFoodpandaOnly && !selectedService) || !selectedPayment || !name || !phone || cart.length === 0) return false;
     if (selectedService === 'Delivery' && !document.getElementById('deliveryAddress').value.trim()) return false;
     return true;
   }
@@ -1619,26 +1696,32 @@ Please confirm my order! 🎉`;
     document.body.style.overflow = '';
   }
 
+  function isMobile() {
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  }
   function isIOS() {
     return /iPhone|iPad|iPod/i.test(navigator.userAgent);
   }
 
   function sendToFacebook() {
     const msg = buildOrderMessage();
-    const pageId = FB_PAGES[selectedBranch] || FB_PAGES['Roxas City'];
-    const messengerUrl = `https://m.me/${pageId}?text=${encodeURIComponent(msg)}`;
+    const pageId = FB_PAGES[selectedBranch] || FB_PAGES['Arnaldo Blvd'];
+    const encodedMsg = encodeURIComponent(msg);
+    const webUrl = `https://m.me/${pageId}?text=${encodedMsg}`;
+    // Deep link opens Messenger app directly on Android & iOS
+    const appUrl = `fb-messenger://user-thread/${pageId}`;
 
-    if (isIOS()) {
-      // On iOS: copy the text first so they can paste it,
-      // then open m.me — pre-filled text works on newer iOS but paste is the fallback
+    if (isMobile()) {
+      // Copy order to clipboard as fallback (text pre-fill not guaranteed in app)
       navigator.clipboard.writeText(msg).catch(() => {});
       document.getElementById('iosTip').style.display = 'block';
-      // Small delay so clipboard write completes before opening Messenger
+      // Try to open Messenger app; fall back to m.me after short delay
+      window.location.href = appUrl;
       setTimeout(() => {
-        window.location.href = messengerUrl;
-      }, 300);
+        window.location.href = webUrl;
+      }, 1500);
     } else {
-      window.open(messengerUrl, '_blank');
+      window.open(webUrl, '_blank');
     }
   }
 
