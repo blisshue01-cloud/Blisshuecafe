@@ -11,10 +11,10 @@
 
 const ALLOWED_PAGES = ['index', 'order'];
 
-const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME/main/';
+const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/blisshue01-cloud/Blisshuecafe/main/';
 
 // ── CORS headers — your Cloudflare Pages domain ──
-const ALLOWED_ORIGIN = 'https://YOUR_REPO_NAME.pages.dev';
+const ALLOWED_ORIGIN = 'https://blisshuecafe.pages.dev';
 
 function corsHeaders(origin) {
   const allowed = origin === ALLOWED_ORIGIN || origin?.endsWith('.pages.dev');
