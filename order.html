@@ -934,13 +934,14 @@
 
       <div class="payment-option" onclick="selectPayment(this,'GCash QR')">
         <div class="payment-radio"></div>
-        <div class="payment-qr">
-          <!-- TO ADD YOUR QR: replace this div with <img src="your-gcash-qr.jpg" alt="GCash QR"> -->
-          <div class="payment-qr-placeholder" style="background:#1a1a1a;border:1px dashed rgba(201,168,76,0.4);border-radius:2px;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+        <div class="payment-qr" id="qr-gcash-wrap" onclick="event.stopPropagation(); triggerQRUpload('gcash')" title="Click to upload QR image" style="cursor:pointer; position:relative;">
+          <img id="qr-gcash-img" style="width:100%;height:100%;object-fit:contain;display:none;border-radius:2px;" alt="GCash QR">
+          <div id="qr-gcash-placeholder" class="payment-qr-placeholder" style="background:#1a1a1a;border:1px dashed rgba(201,168,76,0.4);border-radius:2px;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="rgba(201,168,76,0.5)"><path d="M3 11h8V3H3v8zm2-6h4v4H5V5zm8-2v8h8V3h-8zm6 6h-4V5h4v4zM3 21h8v-8H3v8zm2-6h4v4H5v-4zm13 0h-2v2h2v-2zm-4 0h-2v2h2v-2zm4 4h-2v2h2v-2zm-4 0h-2v2h2v-2z"/></svg>
-            <span style="font-size:.42rem;color:rgba(201,168,76,0.6);text-align:center;line-height:1.3;">GCash QR<br>📷 Add image</span>
+            <span style="font-size:.42rem;color:rgba(201,168,76,0.6);text-align:center;line-height:1.3;">GCash QR<br>📷 Tap to upload</span>
           </div>
         </div>
+        <input type="file" id="qr-gcash-input" accept="image/*" style="display:none" onchange="handleQRUpload(this,'gcash')">
         <div>
           <span class="payment-name" data-editable="pay-1-name">GCash Only</span>
           <span class="payment-desc" data-editable="pay-1-desc">Scan and pay after placing your order.<br>Send screenshot alongside your order details.</span>
@@ -949,13 +950,14 @@
 
       <div class="payment-option" onclick="selectPayment(this,'QR Ph')">
         <div class="payment-radio"></div>
-        <div class="payment-qr">
-          <!-- TO ADD YOUR QR: replace this div with <img src="your-qrph.jpg" alt="QR Ph"> -->
-          <div class="payment-qr-placeholder" style="background:#1a1a1a;border:1px dashed rgba(201,168,76,0.4);border-radius:2px;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+        <div class="payment-qr" id="qr-qrph-wrap" onclick="event.stopPropagation(); triggerQRUpload('qrph')" title="Click to upload QR image" style="cursor:pointer; position:relative;">
+          <img id="qr-qrph-img" style="width:100%;height:100%;object-fit:contain;display:none;border-radius:2px;" alt="QR Ph">
+          <div id="qr-qrph-placeholder" class="payment-qr-placeholder" style="background:#1a1a1a;border:1px dashed rgba(201,168,76,0.4);border-radius:2px;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="rgba(201,168,76,0.5)"><path d="M3 11h8V3H3v8zm2-6h4v4H5V5zm8-2v8h8V3h-8zm6 6h-4V5h4v4zM3 21h8v-8H3v8zm2-6h4v4H5v-4zm13 0h-2v2h2v-2zm-4 0h-2v2h2v-2zm4 4h-2v2h2v-2zm-4 0h-2v2h2v-2z"/></svg>
-            <span style="font-size:.42rem;color:rgba(201,168,76,0.6);text-align:center;line-height:1.3;">QR Ph<br>📷 Add image</span>
+            <span style="font-size:.42rem;color:rgba(201,168,76,0.6);text-align:center;line-height:1.3;">QR Ph<br>📷 Tap to upload</span>
           </div>
         </div>
+        <input type="file" id="qr-qrph-input" accept="image/*" style="display:none" onchange="handleQRUpload(this,'qrph')">
         <div>
           <span class="payment-name" data-editable="pay-2-name">QR Ph</span>
           <span class="payment-desc" data-editable="pay-2-desc">Scan with any PH bank or e-wallet.<br>(BPI, BDO, Maya, GCash, UnionBank, etc.)</span>
@@ -1265,7 +1267,38 @@
     { name: 'Nutella', price: 30 }
   ];
 
-  // ── SELECTORS ──
+  // ── QR IMAGE UPLOAD ──
+  function triggerQRUpload(key) {
+    document.getElementById(`qr-${key}-input`).click();
+  }
+
+  function handleQRUpload(input, key) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const data = e.target.result;
+      localStorage.setItem(`qr_image_${key}`, data);
+      showQRImage(key, data);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function showQRImage(key, data) {
+    const img = document.getElementById(`qr-${key}-img`);
+    const placeholder = document.getElementById(`qr-${key}-placeholder`);
+    img.src = data;
+    img.style.display = 'block';
+    placeholder.style.display = 'none';
+  }
+
+  // Load saved QR images on page load
+  window.addEventListener('DOMContentLoaded', () => {
+    ['gcash', 'qrph'].forEach(key => {
+      const saved = localStorage.getItem(`qr_image_${key}`);
+      if (saved) showQRImage(key, saved);
+    });
+  });
   function selectBranch(btn) {
     document.querySelectorAll('.branch-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
