@@ -1289,7 +1289,7 @@
       buttons: [
         { service: 'Dine In',  icon: '🍽️',  clickable: true },
         { service: 'Pickup',   icon: '🚶',   clickable: true },
-        { service: 'Delivery', icon: '🛵',   clickable: false },
+        { service: 'Delivery', icon: '🛵',   clickable: true },
       ],
       foodpanda: true,
       foodpandaUrl: 'https://www.foodpanda.ph',
@@ -1647,7 +1647,7 @@
     if (notes) extra += `\n📝 Notes: ${notes}`;
 
     return `🧋 New Order from Bliss Hue Website
-
+${selectedPayment === 'GCash QR' ? '\n💳 GCash Payment To:\n09701425001 (Joshua D.)\n' : ''}
 📍 Branch: ${selectedBranch}
 🔖 Order Type: ${selectedService}${extra}
 
