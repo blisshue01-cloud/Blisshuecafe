@@ -905,8 +905,8 @@
       <div class="menu-panel" id="menu-seasonal">
         <p style="font-size:.7rem;color:var(--gold);letter-spacing:.15em;text-transform:uppercase;margin-bottom:16px;">22oz Only</p>
         <div class="menu-items">
-          <div class="menu-item-row" id="row-AvocadoGrahams"><div class="menu-item-info"><span class="menu-item-name">Avocado Grahams</span><span class="menu-item-desc">Seasonal Special</span></div><span class="menu-item-price">₱169</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Avocado Grahams',169,'fixed22')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
           <div class="menu-item-row" id="row-MangoGrahams"><div class="menu-item-info"><span class="menu-item-name">Mango Grahams</span><span class="menu-item-desc">Seasonal Special</span></div><span class="menu-item-price">₱149</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Mango Grahams',149,'fixed22')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
+          <div class="menu-item-row" id="row-AvocadoGrahams"><div class="menu-item-info"><span class="menu-item-name">Avocado Grahams</span><span class="menu-item-desc">Seasonal Special</span></div><span class="menu-item-price">₱169</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Avocado Grahams',169,'fixed22')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
           <div class="menu-item-row" id="row-PistachioChoco"><div class="menu-item-info"><span class="menu-item-name">Pistachio Choco</span><span class="menu-item-desc">Seasonal Special</span></div><span class="menu-item-price">₱169</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Pistachio Choco',169,'fixed22')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
           <div class="menu-item-row" id="row-PistachioCheesecake"><div class="menu-item-info"><span class="menu-item-name">Pistachio Cheesecake</span><span class="menu-item-desc">Seasonal Special</span></div><span class="menu-item-price">₱169</span><button class="item-expand-btn" onclick="toggleCustomizer(this,'Pistachio Cheesecake',169,'fixed22')"><span class="expand-icon">+</span> Customize</button><div class="item-customizer"></div></div>
         </div>
@@ -1262,7 +1262,7 @@
     { name: 'Oreo', price: 15 }, { name: 'Fudge', price: 15 },
     { name: 'Grahams', price: 15 }, { name: 'Nata', price: 15 },
     { name: 'Chips', price: 20 }, { name: 'Queso', price: 20 },
-    { name: 'Cashew', price: 25 }, { name: 'Almonds', price: 25 },
+    { name: 'Cashew', price: 25 }, { name: 'Almonds 🔥', price: 25 },
     { name: 'Whipped Cream', price: 25 }, { name: 'Kitkat', price: 30 },
     { name: 'Nutella', price: 30 }
   ];
@@ -1412,7 +1412,7 @@
         <span class="ao-check"></span>
       </div>`).join('');
 
-    const sweetHTML = ['Less Sweet','Normal Sweet','Extra Sweet','Custom'].map((s,i) =>
+    const sweetHTML = ['Less Sweet','Normal Sweet 🔥','Extra Sweet','Custom'].map((s,i) =>
       `<div class="sweet-opt${i===1?' sel':''}" onclick="selSweet(this,'${s}')">${s}</div>`).join('');
 
     const sizeLabel = sizeMode === 'fixed22' ? '22oz' : sizeMode === 'slurpee' ? '16oz' : 'Size';
@@ -1512,7 +1512,7 @@
     // Add-ons
     let addons = [], addonTotal = 0;
     panel.querySelectorAll('.addon-opt.sel').forEach(el => {
-      const name = el.querySelector('span').textContent;
+      const name = el.querySelector('span').textContent.replace(/\s*🔥/g, '').trim();
       const price = parseInt(el.getAttribute('onclick').match(/togAddon\(this,(\d+)\)/)[1]);
       addons.push({ name, price });
       addonTotal += price;
@@ -1520,8 +1520,8 @@
 
     // Sweetness
     const sweetEl = panel.querySelector('.sweet-opt.sel');
-    let sweetness = sweetEl ? sweetEl.textContent : 'Normal Sweet';
-    if (sweetness === 'Custom') {
+    let sweetness = sweetEl ? sweetEl.textContent.replace(/\s*🔥/g, '').trim() : 'Normal Sweet';
+    if (sweetness === 'Custom' || sweetness === 'Custom 🔥') {
       const v = panel.querySelector('.sweet-custom-in').value.trim();
       sweetness = v ? 'Custom: ' + v : 'Custom';
     }
