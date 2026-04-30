@@ -869,7 +869,7 @@
         <div id="pinMapWrap" style="display:none; margin-bottom:8px; border-radius:4px; overflow:hidden; border:1px solid rgba(201,168,76,0.3);">
           <div id="pinMap" style="height:220px; width:100%; z-index:1;"></div>
           <div style="background:#1a1a1a; padding:6px 10px; font-size:.68rem; color:var(--muted); text-align:center;">
-            📌 Drag the pin to your exact location
+            📌 Drag the pin OR tap anywhere on the map to move it
           </div>
         </div>
 
@@ -1695,7 +1695,7 @@
           const goldIcon = L.divIcon({
             html: `<div style="
               width:28px; height:28px;
-              background:var(--gold);
+              background:#c9a84c;
               border:3px solid #fff;
               border-radius:50% 50% 50% 0;
               transform:rotate(-45deg);
@@ -1708,18 +1708,25 @@
 
           pinMarker = L.marker([lat, lon], { icon: goldIcon, draggable: true }).addTo(pinMap);
 
-          // On drag end — reverse geocode new position
-          pinMarker.on('dragend', function(e) {
-            const newPos = pinMarker.getLatLng();
-            reverseGeocode(newPos.lat, newPos.lng);
+          // Drag end — update address
+          pinMarker.on('dragend', function() {
+            const p = pinMarker.getLatLng();
+            reverseGeocode(p.lat, p.lng);
           });
+
+          // Also allow tapping anywhere on map to move pin
+          pinMap.on('click', function(e) {
+            pinMarker.setLatLng(e.latlng);
+            reverseGeocode(e.latlng.lat, e.latlng.lng);
+          });
+
         } else {
           pinMap.setView([lat, lon], 17);
           pinMarker.setLatLng([lat, lon]);
         }
 
         // Invalidate size in case map was hidden
-        setTimeout(() => pinMap.invalidateSize(), 100);
+        setTimeout(() => { pinMap.invalidateSize(); }, 200);
 
         // Reverse geocode initial position
         reverseGeocode(lat, lon);
@@ -1742,41 +1749,44 @@
     );
   }
 
-  async function reverseGeocode(lat, lon) {
-    showLocStatus('🔍 Updating pin...', 'var(--muted)');
+  let _geocodeTimer = null;
+  function reverseGeocode(lat, lon) {
+    // Debounce — wait 600ms after last move before fetching
+    clearTimeout(_geocodeTimer);
+    showLocStatus('🔍 Updating address...', '#c9a84c');
 
-    // Always save the Google Maps link with exact coordinates
+    // Always update map link immediately
     const mapLink = `https://maps.google.com/?q=${lat},${lon}`;
     document.getElementById('deliveryMapLink').value = mapLink;
 
-    // Try to get a rough area name from Nominatim for reference
-    try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&zoom=16&addressdetails=1`,
-        { headers: { 'Accept-Language': 'en' } }
-      );
-      const data = await res.json();
+    _geocodeTimer = setTimeout(async function() {
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&zoom=16&addressdetails=1`,
+          { headers: { 'Accept-Language': 'en', 'User-Agent': 'BlissHueCafe/1.0' } }
+        );
+        if (!res.ok) throw new Error('Nominatim error');
+        const data = await res.json();
 
-      // Build a cleaner address from parts instead of display_name
-      const a = data.address || {};
-      const parts = [
-        a.house_number,
-        a.road || a.pedestrian || a.footway,
-        a.village || a.suburb || a.neighbourhood || a.hamlet || a.quarter,
-        a.city || a.town || a.municipality,
-        a.state,
-        a.postcode,
-        a.country
-      ].filter(Boolean);
+        const a = data.address || {};
+        const parts = [
+          a.house_number,
+          a.road || a.pedestrian || a.footway || a.path,
+          a.village || a.suburb || a.neighbourhood || a.hamlet || a.quarter || a.county,
+          a.city || a.town || a.municipality,
+          a.state,
+          a.postcode,
+          a.country
+        ].filter(Boolean);
 
-      const addr = parts.length > 1 ? parts.join(', ') : data.display_name || '';
-      document.getElementById('deliveryAddress').value = addr;
-      showLocStatus('✅ Pin updated! Please check and correct your address below if needed.', '#6dbf6d');
-    } catch(e) {
-      // On error just clear and let customer type
-      document.getElementById('deliveryAddress').value = '';
-      showLocStatus('✅ Pin placed! Please type your full address below.', '#6dbf6d');
-    }
+        const addr = parts.length >= 2 ? parts.join(', ') : (data.display_name || `${lat.toFixed(6)}, ${lon.toFixed(6)}`);
+        document.getElementById('deliveryAddress').value = addr;
+        showLocStatus('✅ Pin updated! Please correct your exact address below if needed.', '#6dbf6d');
+      } catch(e) {
+        document.getElementById('deliveryAddress').value = '';
+        showLocStatus('⚠ Could not detect address. Please type it below manually.', '#e0a855');
+      }
+    }, 600);
   }
 
   function showLocStatus(msg, color) {
