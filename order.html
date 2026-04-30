@@ -1709,9 +1709,9 @@
           pinMarker = L.marker([lat, lon], { icon: goldIcon, draggable: true }).addTo(pinMap);
 
           // On drag end — reverse geocode new position
-          pinMarker.on('dragend', function() {
-            const pos = pinMarker.getLatLng();
-            reverseGeocode(pos.lat, pos.lng);
+          pinMarker.on('dragend', function(e) {
+            const newPos = pinMarker.getLatLng();
+            reverseGeocode(newPos.lat, newPos.lng);
           });
         } else {
           pinMap.setView([lat, lon], 17);
@@ -1743,23 +1743,39 @@
   }
 
   async function reverseGeocode(lat, lon) {
-    showLocStatus('🔍 Finding your address...', 'var(--muted)');
-    // Save map link regardless
+    showLocStatus('🔍 Updating pin...', 'var(--muted)');
+
+    // Always save the Google Maps link with exact coordinates
     const mapLink = `https://maps.google.com/?q=${lat},${lon}`;
     document.getElementById('deliveryMapLink').value = mapLink;
 
+    // Try to get a rough area name from Nominatim for reference
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&zoom=16&addressdetails=1`,
         { headers: { 'Accept-Language': 'en' } }
       );
       const data = await res.json();
-      const addr = data.display_name || `${lat}, ${lon}`;
+
+      // Build a cleaner address from parts instead of display_name
+      const a = data.address || {};
+      const parts = [
+        a.house_number,
+        a.road || a.pedestrian || a.footway,
+        a.village || a.suburb || a.neighbourhood || a.hamlet || a.quarter,
+        a.city || a.town || a.municipality,
+        a.state,
+        a.postcode,
+        a.country
+      ].filter(Boolean);
+
+      const addr = parts.length > 1 ? parts.join(', ') : data.display_name || '';
       document.getElementById('deliveryAddress').value = addr;
-      showLocStatus('✅ Pin placed! Drag it to adjust your exact location.', '#6dbf6d');
+      showLocStatus('✅ Pin updated! Please check and correct your address below if needed.', '#6dbf6d');
     } catch(e) {
-      document.getElementById('deliveryAddress').value = `${lat}, ${lon}`;
-      showLocStatus('✅ Pin placed! You can edit the address below.', '#6dbf6d');
+      // On error just clear and let customer type
+      document.getElementById('deliveryAddress').value = '';
+      showLocStatus('✅ Pin placed! Please type your full address below.', '#6dbf6d');
     }
   }
 
