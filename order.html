@@ -841,6 +841,23 @@
       <!-- CONDITIONAL: Address for Delivery -->
       <div class="form-group" id="addressGroup" style="display:none;">
         <label>Delivery Address <span>*</span></label>
+        <button type="button" id="useLocationBtn" onclick="useMyLocation()" style="
+          display:flex; align-items:center; gap:7px;
+          margin-bottom:8px;
+          padding:9px 14px;
+          background:rgba(201,168,76,0.1);
+          border:1px solid rgba(201,168,76,0.35);
+          color:var(--gold);
+          font-family:'DM Sans',sans-serif;
+          font-size:.76rem; font-weight:600;
+          letter-spacing:.08em;
+          border-radius:2px; cursor:pointer;
+          transition:all .2s;
+        " onmouseover="this.style.background='rgba(201,168,76,0.2)'" onmouseout="this.style.background='rgba(201,168,76,0.1)'">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--gold)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          <span id="useLocationBtnText">📍 Use My Location</span>
+        </button>
+        <div id="locationStatus" style="font-size:.7rem;color:var(--muted);margin-bottom:6px;display:none;"></div>
         <textarea class="form-input" id="deliveryAddress" rows="2" placeholder="Street, Barangay, City..."></textarea>
       </div>
 
@@ -1618,6 +1635,66 @@
   function removeCartItem(idx) {
     cart.splice(idx, 1);
     updateSummary();
+  }
+
+  // ── USE MY LOCATION ──
+  function useMyLocation() {
+    const btn = document.getElementById('useLocationBtn');
+    const btnText = document.getElementById('useLocationBtnText');
+    const status = document.getElementById('locationStatus');
+
+    if (!navigator.geolocation) {
+      status.style.display = 'block';
+      status.style.color = '#e05555';
+      status.textContent = '⚠ Your browser does not support location access.';
+      return;
+    }
+
+    btnText.textContent = '⏳ Getting location...';
+    btn.disabled = true;
+    btn.style.opacity = '0.6';
+    status.style.display = 'none';
+
+    navigator.geolocation.getCurrentPosition(
+      async function(pos) {
+        const lat = pos.coords.latitude;
+        const lon = pos.coords.longitude;
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,
+            { headers: { 'Accept-Language': 'en', 'User-Agent': 'BlissHueCafe/1.0' } }
+          );
+          const data = await res.json();
+          const addr = data.display_name || `${lat}, ${lon}`;
+          document.getElementById('deliveryAddress').value = addr;
+          status.style.display = 'block';
+          status.style.color = '#6dbf6d';
+          status.textContent = '✅ Location detected! You can edit the address below if needed.';
+        } catch(e) {
+          // Fallback: just put coordinates
+          document.getElementById('deliveryAddress').value = `${lat}, ${lon}`;
+          status.style.display = 'block';
+          status.style.color = '#e0a855';
+          status.textContent = '⚠ Could not convert to address. Coordinates saved instead.';
+        }
+        btnText.textContent = '📍 Use My Location';
+        btn.disabled = false;
+        btn.style.opacity = '1';
+      },
+      function(err) {
+        let msg = '⚠ Could not get location.';
+        if (err.code === 1) msg = '⚠ Location access denied. Please allow location in your browser.';
+        else if (err.code === 2) msg = '⚠ Location unavailable. Please type your address manually.';
+        else if (err.code === 3) msg = '⚠ Location request timed out. Try again.';
+        status.style.display = 'block';
+        status.style.color = '#e05555';
+        status.textContent = msg;
+        btnText.textContent = '📍 Use My Location';
+        btn.disabled = false;
+        btn.style.opacity = '1';
+      },
+      { timeout: 10000, maximumAge: 0, enableHighAccuracy: true }
+    );
   }
 
   // ── SUMMARY ──
