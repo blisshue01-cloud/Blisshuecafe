@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Order Now — Bliss Hue Café</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@500;600&family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -841,6 +842,8 @@
       <!-- CONDITIONAL: Address for Delivery -->
       <div class="form-group" id="addressGroup" style="display:none;">
         <label>Delivery Address <span>*</span></label>
+
+        <!-- Pin Location Button -->
         <button type="button" id="useLocationBtn" onclick="useMyLocation()" style="
           display:flex; align-items:center; gap:7px;
           margin-bottom:8px;
@@ -852,13 +855,29 @@
           font-size:.76rem; font-weight:600;
           letter-spacing:.08em;
           border-radius:2px; cursor:pointer;
-          transition:all .2s;
+          transition:all .2s; width:100%;
+          justify-content:center;
         " onmouseover="this.style.background='rgba(201,168,76,0.2)'" onmouseout="this.style.background='rgba(201,168,76,0.1)'">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--gold)"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-          <span id="useLocationBtnText">📍 Use My Location</span>
+          <span id="useLocationBtnText">📍 Drop a Pin on Map</span>
         </button>
-        <div id="locationStatus" style="font-size:.7rem;color:var(--muted);margin-bottom:6px;display:none;"></div>
+
+        <!-- Status message -->
+        <div id="locationStatus" style="font-size:.7rem;margin-bottom:6px;display:none;"></div>
+
+        <!-- Leaflet Map -->
+        <div id="pinMapWrap" style="display:none; margin-bottom:8px; border-radius:4px; overflow:hidden; border:1px solid rgba(201,168,76,0.3);">
+          <div id="pinMap" style="height:220px; width:100%; z-index:1;"></div>
+          <div style="background:#1a1a1a; padding:6px 10px; font-size:.68rem; color:var(--muted); text-align:center;">
+            📌 Drag the pin to your exact location
+          </div>
+        </div>
+
+        <!-- Address textarea -->
         <textarea class="form-input" id="deliveryAddress" rows="2" placeholder="Street, Barangay, City..."></textarea>
+
+        <!-- Map link (hidden, used in order message) -->
+        <input type="hidden" id="deliveryMapLink" value="">
       </div>
 
       <div class="form-group">
@@ -1637,64 +1656,118 @@
     updateSummary();
   }
 
-  // ── USE MY LOCATION ──
+  // ── PIN LOCATION MAP ──
+  let pinMap = null, pinMarker = null;
+
   function useMyLocation() {
     const btn = document.getElementById('useLocationBtn');
     const btnText = document.getElementById('useLocationBtnText');
     const status = document.getElementById('locationStatus');
+    const mapWrap = document.getElementById('pinMapWrap');
 
     if (!navigator.geolocation) {
-      status.style.display = 'block';
-      status.style.color = '#e05555';
-      status.textContent = '⚠ Your browser does not support location access.';
+      showLocStatus('⚠ Your browser does not support location access.', '#e05555');
       return;
     }
 
-    btnText.textContent = '⏳ Getting location...';
+    btnText.textContent = '⏳ Getting your location...';
     btn.disabled = true;
     btn.style.opacity = '0.6';
     status.style.display = 'none';
 
     navigator.geolocation.getCurrentPosition(
-      async function(pos) {
+      function(pos) {
         const lat = pos.coords.latitude;
         const lon = pos.coords.longitude;
-        try {
-          const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,
-            { headers: { 'Accept-Language': 'en', 'User-Agent': 'BlissHueCafe/1.0' } }
-          );
-          const data = await res.json();
-          const addr = data.display_name || `${lat}, ${lon}`;
-          document.getElementById('deliveryAddress').value = addr;
-          status.style.display = 'block';
-          status.style.color = '#6dbf6d';
-          status.textContent = '✅ Location detected! You can edit the address below if needed.';
-        } catch(e) {
-          // Fallback: just put coordinates
-          document.getElementById('deliveryAddress').value = `${lat}, ${lon}`;
-          status.style.display = 'block';
-          status.style.color = '#e0a855';
-          status.textContent = '⚠ Could not convert to address. Coordinates saved instead.';
+
+        // Show map
+        mapWrap.style.display = 'block';
+
+        if (!pinMap) {
+          // Init map
+          pinMap = L.map('pinMap', { zoomControl: true }).setView([lat, lon], 17);
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap',
+            maxZoom: 19
+          }).addTo(pinMap);
+
+          // Custom gold pin icon
+          const goldIcon = L.divIcon({
+            html: `<div style="
+              width:28px; height:28px;
+              background:var(--gold);
+              border:3px solid #fff;
+              border-radius:50% 50% 50% 0;
+              transform:rotate(-45deg);
+              box-shadow:0 2px 8px rgba(0,0,0,0.4);
+            "></div>`,
+            iconSize: [28, 28],
+            iconAnchor: [14, 28],
+            className: ''
+          });
+
+          pinMarker = L.marker([lat, lon], { icon: goldIcon, draggable: true }).addTo(pinMap);
+
+          // On drag end — reverse geocode new position
+          pinMarker.on('dragend', function() {
+            const pos = pinMarker.getLatLng();
+            reverseGeocode(pos.lat, pos.lng);
+          });
+        } else {
+          pinMap.setView([lat, lon], 17);
+          pinMarker.setLatLng([lat, lon]);
         }
-        btnText.textContent = '📍 Use My Location';
+
+        // Invalidate size in case map was hidden
+        setTimeout(() => pinMap.invalidateSize(), 100);
+
+        // Reverse geocode initial position
+        reverseGeocode(lat, lon);
+
+        btnText.textContent = '📍 Drop a Pin on Map';
         btn.disabled = false;
         btn.style.opacity = '1';
       },
       function(err) {
         let msg = '⚠ Could not get location.';
-        if (err.code === 1) msg = '⚠ Location access denied. Please allow location in your browser.';
+        if (err.code === 1) msg = '⚠ Location access denied. Please allow location in your browser settings.';
         else if (err.code === 2) msg = '⚠ Location unavailable. Please type your address manually.';
         else if (err.code === 3) msg = '⚠ Location request timed out. Try again.';
-        status.style.display = 'block';
-        status.style.color = '#e05555';
-        status.textContent = msg;
-        btnText.textContent = '📍 Use My Location';
+        showLocStatus(msg, '#e05555');
+        btnText.textContent = '📍 Drop a Pin on Map';
         btn.disabled = false;
         btn.style.opacity = '1';
       },
       { timeout: 10000, maximumAge: 0, enableHighAccuracy: true }
     );
+  }
+
+  async function reverseGeocode(lat, lon) {
+    showLocStatus('🔍 Finding your address...', 'var(--muted)');
+    // Save map link regardless
+    const mapLink = `https://maps.google.com/?q=${lat},${lon}`;
+    document.getElementById('deliveryMapLink').value = mapLink;
+
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,
+        { headers: { 'Accept-Language': 'en' } }
+      );
+      const data = await res.json();
+      const addr = data.display_name || `${lat}, ${lon}`;
+      document.getElementById('deliveryAddress').value = addr;
+      showLocStatus('✅ Pin placed! Drag it to adjust your exact location.', '#6dbf6d');
+    } catch(e) {
+      document.getElementById('deliveryAddress').value = `${lat}, ${lon}`;
+      showLocStatus('✅ Pin placed! You can edit the address below.', '#6dbf6d');
+    }
+  }
+
+  function showLocStatus(msg, color) {
+    const status = document.getElementById('locationStatus');
+    status.style.display = 'block';
+    status.style.color = color;
+    status.textContent = msg;
   }
 
   // ── SUMMARY ──
@@ -1758,7 +1831,10 @@
     });
 
     let extra = '';
-    if (selectedService === 'Delivery' && address) extra = `\n📍 Delivery Address:\n   ${address}`;
+    if (selectedService === 'Delivery' && address) {
+      const mapLink = document.getElementById('deliveryMapLink') ? document.getElementById('deliveryMapLink').value : '';
+      extra = `\n📍 Delivery Address:\n   ${address}` + (mapLink ? `\n🗺️ Map Pin: ${mapLink}` : '');
+    }
     if (notes) extra += `\n📝 Notes: ${notes}`;
 
     return `🧋 New Order from Bliss Hue Website
@@ -1851,5 +1927,6 @@ Please confirm my order! 🎉`;
 
   updateSummary();
 </script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </body>
 </html>
